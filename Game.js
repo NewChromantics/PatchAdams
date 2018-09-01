@@ -22,12 +22,13 @@ function TBox(Center3,Size3)
 function TPlug()
 {
 	this.Alive = true;
+	this.Rand = Math.random() * 1000;
 	
 	this.GetLed0 = function()
 	{
 		let Lights = [ 0, 0.33, 0.66, 1 ];
 		let Rate = 1000;
-		let Time = Date.now() + 0;
+		let Time = Date.now() + 0 + this.Rand;
 		Time = (Time % Rate) / (Rate/Lights.length);
 		return Lights[ Math.floor(Time) ];
 	}
@@ -35,7 +36,7 @@ function TPlug()
 	{
 		let Lights = [ 0.33, 0, 1, 0.66, 1 ];
 		let Rate = 1000;
-		let Time = Date.now() + 543436;
+		let Time = Date.now() + 543436 + this.Rand;
 		Time = (Time % Rate) / (Rate/Lights.length);
 		return Lights[ Math.floor(Time) ];
 	}

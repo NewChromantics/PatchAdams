@@ -4,7 +4,7 @@ precision highp float;
 varying vec2 uv;
 uniform sampler2D SdfTexture;
 const vec3 Colour = vec3(19.0/255.0,69.0/255.0,150.0/255.0);
-const vec3 MetalColour = vec3(0.7,0.7,0.7);
+const vec3 MetalColour = vec3(0.8,0.8,0.9);
 const vec3 HoleColour = vec3(0,0,0);
 const vec3 LedOffColour = vec3(0.1,0.3,0.1);
 const vec3 LedRedColour = vec3(1.0,0.0,0.1);
