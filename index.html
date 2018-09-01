@@ -119,16 +119,16 @@ void main()
 		var Screen = new TScreen( Canvas );
 		
 		var Game = new TGame(10);
-		var Renderer = new TRenderer2d();
+		var Renderer = new TRenderer2d(Context);
 
 //	force 1:1 ratio
 		Screen.GetWidth = function()
 		{
-			return Math.max( this.CanvasElement.width, this.CanvasElement.height );
+			return Math.max( Canvas.width, Canvas.height );
 		}
 		Screen.GetHeight = function()
 		{
-			return Math.max( this.CanvasElement.width, this.CanvasElement.height );
+			return Math.max( Canvas.width, Canvas.height );
 		}
 
 		var ResizeCanvas = function()

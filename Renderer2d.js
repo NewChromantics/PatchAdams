@@ -60,10 +60,10 @@ void main()
 
 
 
-function TRenderer2d()
+function TRenderer2d(Context)
 {
 	this.HubShader = new TShader("Sdf", PopGlBlitter.VertShader, FragShader_SdfHorse );
-	PopGlBlitter.Init();
+	PopGlBlitter.Init(Context);
 	
 	//let SdfUrl = 'plug.png';
 	let SdfUrl = 'http://electric.horse/horse_sdf.png';
