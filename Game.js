@@ -22,6 +22,23 @@ function TBox(Center3,Size3)
 function TPlug()
 {
 	this.Alive = true;
+	
+	this.GetLed0 = function()
+	{
+		let Lights = [ 0, 0.33, 0.66, 1 ];
+		let Rate = 1000;
+		let Time = Date.now() + 0;
+		Time = (Time % Rate) / (Rate/Lights.length);
+		return Lights[ Math.floor(Time) ];
+	}
+	this.GetLed1 = function()
+	{
+		let Lights = [ 0.33, 0, 1, 0.66, 1 ];
+		let Rate = 1000;
+		let Time = Date.now() + 543436;
+		Time = (Time % Rate) / (Rate/Lights.length);
+		return Lights[ Math.floor(Time) ];
+	}
 }
 
 function THub(PlugCount,HubIndex)
