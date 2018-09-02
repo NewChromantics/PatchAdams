@@ -2,7 +2,8 @@
 var FragShader_Hub = `
 precision highp float;
 varying vec2 uv;
-uniform sampler2D SdfTexture;
+uniform sampler2D PlugSdfTexture;
+uniform sampler2D PlugBlurSdfTexture;
 const vec3 Colour = vec3(19.0/255.0,69.0/255.0,150.0/255.0);
 const vec3 MetalColour = vec3(0.8,0.8,0.9);
 const vec3 HoleColour = vec3(0,0,0);
@@ -50,7 +51,7 @@ vec3 GetLedColour(float LedState)
 
 vec4 DrawPlug(vec2 uv,float Led0Status,float Led1Status)
 {
-	vec4 SdfChannels = texture2D( SdfTexture, uv);
+	vec4 SdfChannels = texture2D( PlugBlurSdfTexture, uv);
 	float Alpha = SdfChannels.w;
 	bool Metal = SdfChannels.r>0.5;
 	bool Led0 = SdfChannels.g>0.5;
@@ -95,8 +96,8 @@ function TRenderer2d(Context)
 	//let SdfUrl = 'plug.png';
 	//let SdfUrl = 'http://electric.horse/horse_sdf.png';
 	let SdfUrl = 'https://raw.githubusercontent.com/NewChromantics/PatchAdams/master/Plug.png';
-	let LinearFilter = false;
-	this.PlugSdfTexture = new TTexture("sdf",SdfUrl,null,LinearFilter);
+	this.PlugSdfTexture = new TTexture("sdf",SdfUrl,null,false);
+	this.PlugBlurSdfTexture = new TTexture("sdf",SdfUrl,null,true);
 	this.DataTexture = new TTexture("Data");
 	
 	this.UpdateDataTexture = function(Game)
@@ -140,14 +141,16 @@ function TRenderer2d(Context)
 		let Rect = Hub.GetBox3().GetFrontFaceRect();
 		let Scale = 1;
 		let Rect4 = new float4( Rect[0]*Scale, Rect[1]*Scale, Rect[2]*Scale, Rect[3]*Scale );
-		let SdfTexture = this.PlugSdfTexture;
+		let PlugSdfTexture = this.PlugSdfTexture;
+		let PlugBlurSdfTexture = this.PlugBlurSdfTexture;
 		let DataTexture = this.DataTexture;
 		//console.log(Rect4);
 		let SetUniforms = function(Shader,Geo)
 		{
 			Shader.SetUniform( 'PlugCount', Hub.Plugs.length );
 			Shader.SetUniform( 'VertexRect', Rect4 );
-			Shader.SetUniform( 'SdfTexture', SdfTexture );
+			Shader.SetUniform( 'PlugSdfTexture', PlugSdfTexture );
+			Shader.SetUniform( 'PlugBlurSdfTexture', PlugBlurSdfTexture );
 			Shader.SetUniform( 'DataTexture', DataTexture );
 			Shader.SetUniform( 'DataTextureSize', new float2(DataTexture.GetWidth(),DataTexture.GetHeight()) );
 			Shader.SetUniform( 'HubIndex', HubIndex );
