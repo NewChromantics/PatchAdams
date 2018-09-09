@@ -51,7 +51,7 @@ vec3 GetLedColour(float LedState)
 
 vec4 DrawPlug(vec2 uv,float Led0Status,float Led1Status)
 {
-	vec4 SdfChannels = texture2D( PlugBlurSdfTexture, uv);
+	vec4 SdfChannels = texture2D( PlugSdfTexture, uv);
 	float Alpha = SdfChannels.w;
 	bool Metal = SdfChannels.r>0.5;
 	bool Led0 = SdfChannels.g>0.5;
@@ -88,18 +88,8 @@ void main()
 
 
 
-function TRenderer2d(Context)
+function TRenderer2d(Canvas,OnInput)
 {
-	this.HubShader = new TShader("Sdf", PopGlBlitter.VertShader, FragShader_Hub );
-	PopGlBlitter.Init(Context);
-	
-	//let SdfUrl = 'plug.png';
-	//let SdfUrl = 'http://electric.horse/horse_sdf.png';
-	let SdfUrl = 'https://raw.githubusercontent.com/NewChromantics/PatchAdams/master/Plug.png';
-	this.PlugSdfTexture = new TTexture("sdf",SdfUrl,null,false);
-	this.PlugBlurSdfTexture = new TTexture("sdf",SdfUrl,null,true);
-	this.DataTexture = new TTexture("Data");
-	
 	this.UpdateDataTexture = function(Game)
 	{
 		//	setup data
@@ -131,6 +121,9 @@ function TRenderer2d(Context)
 	
 	this.DrawScene = function(Game,RenderTarget)
 	{
+		let ClearColour = new float4(0,1,1,1);
+		Context.Clear(ClearColour);
+		
 		this.UpdateDataTexture(Game);
 		RenderTarget.Bind();
 		Game.Hubs.forEach( this.DrawHub, this );
@@ -157,5 +150,33 @@ function TRenderer2d(Context)
 		}
 		RenderGeo( this.HubShader, PopGlBlitter.BlitGeometry, SetUniforms );
 	}
+	
+	this.OnMouseOver = function(Event)
+	{
+		let Pos = [Event.clientX,Event.clientY];
+		Pos[0] /= Event.target.clientWidth;
+		Pos[1] /= Event.target.clientHeight;
+		let Down = Event.buttons & 1;
+		OnInput( Down, Pos );
+	}
+	
+	this.SetupInputEvents = function(Element)
+	{
+		Element.addEventListener('mousdown', this.OnMouseOver.bind(this) );
+		Element.addEventListener('mouseup', this.OnMouseOver.bind(this) );
+		Element.addEventListener('mousemove', this.OnMouseOver.bind(this) );
+	}
+	
+	let Context = new TContext( Canvas );
+	this.HubShader = new TShader("Sdf", PopGlBlitter.VertShader, FragShader_Hub );
+	PopGlBlitter.Init(Context);
+	
+	//let SdfUrl = 'plug.png';
+	//let SdfUrl = 'http://electric.horse/horse_sdf.png';
+	let SdfUrl = 'https://raw.githubusercontent.com/NewChromantics/PatchAdams/master/Plug.png';
+	this.PlugSdfTexture = new TTexture("sdf",SdfUrl,null,false);
+	this.PlugBlurSdfTexture = new TTexture("sdf",SdfUrl,null,true);
+	this.DataTexture = new TTexture("Data");
+	this.SetupInputEvents( Canvas );
 }
 

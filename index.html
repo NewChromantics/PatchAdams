@@ -115,11 +115,18 @@ void main()
 	function main()
 	{
 		var Canvas = document.getElementById('glcanvas');
-		var Context = new TContext( Canvas );
 		var Screen = new TScreen( Canvas );
 		
-		var Game = new TGame(10);
-		var Renderer = new TRenderer2d(Context);
+		var Game = new TGame(Canvas);
+		for ( let h=0;	h<10;	h++ )
+			Game.AddHub();
+		
+		var OnInput = function()
+		{
+			Game.UpdateInput.apply(Game,arguments);
+		}
+			
+		var Renderer = new TRenderer2d( Canvas, OnInput );
 
 //	force 1:1 ratio
 		Screen.GetWidth = function()
@@ -145,15 +152,13 @@ void main()
 
 		var Time = 0;
 		
-		let ClearColour = new float4(0,1,1,1);
-	
+		
 		function Render()
 		{
 			Time += 1.0 / 60.0;
 			
 			try
 			{
-				Context.Clear(ClearColour);
 				Renderer.DrawScene( Game, Screen );
 			}
 			catch(Exception)
